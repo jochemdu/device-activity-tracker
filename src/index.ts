@@ -15,6 +15,15 @@ import * as qrcode from 'qrcode-terminal';
 import { WhatsAppTracker } from './tracker';
 import * as readline from 'readline';
 
+// Check for debug mode from command line arguments
+const debugMode = process.argv.includes('--debug') || process.argv.includes('-d');
+
+if (debugMode) {
+    console.log('🔍 Debug mode enabled\n');
+} else {
+    console.log('📊 Normal mode (important outputs only)\n');
+    console.log('💡 Tip: Use --debug or -d for detailed debug output\n');
+}
 
 let currentTargetJid: string | null = null;
 let currentTracker: WhatsAppTracker | null = null;
@@ -56,7 +65,7 @@ async function connectToWhatsApp() {
 
             if (currentTargetJid) {
                 console.log(`Resuming tracking for ${currentTargetJid}...`);
-                currentTracker = new WhatsAppTracker(sock, currentTargetJid);
+                currentTracker = new WhatsAppTracker(sock, currentTargetJid, debugMode);
                 currentTracker.startTracking();
             } else {
                 askForTarget();
@@ -95,7 +104,7 @@ async function connectToWhatsApp() {
                 if (result?.exists) {
                     console.log(`Target verified: ${result.jid}`);
                     currentTargetJid = result.jid;
-                    currentTracker = new WhatsAppTracker(sock, result.jid);
+                    currentTracker = new WhatsAppTracker(sock, result.jid, debugMode);
                     currentTracker.startTracking();
                     rl.close();
                 } else {
