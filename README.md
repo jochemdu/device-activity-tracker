@@ -85,7 +85,22 @@ Follow prompts to authenticate and enter target number.
 
 ## How It Works
 
-The tracker sends reaction messages to non-existent message IDs, which triggers no notifications at the target. The time between sending the probe message and receiving the CLIENT ACK (Status 3) is measured as RTT. Device state is detected using a dynamic threshold calculated as 90% of the median RTT: values below the threshold indicate active usage, values above indicate standby mode. Measurements are stored in a history and the median is continuously updated to adapt to different network conditions.
+The tracker sends probe messages and measures the Round-Trip Time (RTT) to detect device activity. Two probe methods are available:
+
+### Probe Methods
+
+| Method | Description                                                                                                      |
+|--------|------------------------------------------------------------------------------------------------------------------|
+| **Delete** (Default) | Sends a "delete" request for a non-existent message ID.                                                          |
+| **Reaction** | Sends a reaction emoji to a non-existent message ID. In my tests, this method does not work with Android devices. |
+
+### Detection Logic
+
+The time between sending the probe message and receiving the CLIENT ACK (Status 3) is measured as RTT. Device state is detected using a dynamic threshold calculated as 90% of the median RTT: values below the threshold indicate active usage, values above indicate standby mode. Measurements are stored in a history and the median is continuously updated to adapt to different network conditions.
+
+### Switching Probe Methods
+
+In the web interface, you can switch between probe methods using the dropdown in the control panel. In CLI mode, the delete method is used by default.
 
 ## Common Issues
 
